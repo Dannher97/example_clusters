@@ -106,9 +106,9 @@ median(data$porc_mana)
 median(data$porc_tar)
 median(data$Percentage_noche)
 
-##### Etapa 3: Data preparation #####
+##### stage 3: Data preparation #####
 
-# Correlaciones
+# correaltions
 
 cor_table<-data[,-1:-2]
 cor_table<-cor_table[,-24]
@@ -131,7 +131,7 @@ colnames(data_es)<-c('No_tran',
                       'porc_mana',
                       'porc_tar')
 
-# Boxplot data escalados
+# Boxplots scaled
 
 ggplot(data,aes(x=grupo_de_cliente,y=prom_tran))+
   geom_boxplot()+
@@ -174,13 +174,13 @@ hist(data_es$prom_tran, xlab="promedio por transacciones",
 
 dev.off()
 
-##### Etapa 4: Modeling ####
+##### stage 4: Modeling ####
 
 wss <- (nrow(data_es)-1)*sum(apply(data_es,2,var))
 
 for (i in 2:15) wss[i] <- sum(kmeans(data_es,
                                      centers=i, nstart=10)$withinss)
-#Gr?fico de codo
+#Elbow chart
 
 sumas <- as.data.frame(cbind(wss, k = seq(1,15, by=1)))
 
@@ -192,7 +192,7 @@ sumas %>% ggplot(aes(x=k, y=wss)) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 
-#Gr?fico silueta
+#silhouette
 
 sampled_data<- as.data.frame(data_es[sample(1:nrow(data_es), 25000), ])
 fviz_nbclust(sampled_data,kmeans,method = 'silhouette')
@@ -206,7 +206,7 @@ cluster_sol$iter
 
 data$cluster <- cluster_sol$cluster
 
-## explorar clusters
+## explore sols
 
 mosaic(~cluster + grupo_de_cliente ,data=data, 
        legend=TRUE, shade=TRUE)
@@ -260,7 +260,7 @@ kclusters <- clusterboot(data_es,B=20,clustermethod=kmeansCBI,k=5,seed = 10)
 kclusters$bootmean
 
 
-### centros
+### centers
 
 centrosg <- as.data.frame(cluster_sol$centers)
 centrosg$cluster <- as.factor(rownames(centrosg))
